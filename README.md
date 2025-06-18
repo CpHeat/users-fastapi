@@ -1,0 +1,1 @@
+Pour lancer l'API : uvicorn api.main:app --reload
