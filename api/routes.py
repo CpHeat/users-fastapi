@@ -8,7 +8,10 @@ from api.security import authenticate
 router = APIRouter()
 
 
-@router.get("/users/", response_model=List[UserSummary])
+@router.get("/users/",
+    response_model=List[UserSummary],
+    response_description="A list of users",
+    tags=["users"])
 def get_users(skip:int = Query(0, ge=0), limit: int = Query(None, ge=1), username: str = Depends(authenticate)) -> list[UserSummary]:
     """
     Returns a list of users.
@@ -25,7 +28,10 @@ def get_users(skip:int = Query(0, ge=0), limit: int = Query(None, ge=1), usernam
         selected_users = users[skip:skip + limit]
     return [UserSummary(id = u.id, login=u.login) for u in selected_users]
 
-@router.get("/users/search", response_model=List[UserSummary])
+@router.get("/users/search",
+    response_model=List[UserSummary],
+    response_description="A list of users",
+    tags=["users"])
 def search_users(q: str = Query(..., min_length=1), username: str = Depends(authenticate)) -> list[UserSummary] | str:
     """
     Returns a list of users whose login contains the specified string.
@@ -42,7 +48,9 @@ def search_users(q: str = Query(..., min_length=1), username: str = Depends(auth
             found_users.append(u)
     return [UserSummary(id = u.id, login=u.login) for u in found_users]
 
-@router.get("/users/{user_login}")
+@router.get("/users/{user_login}",
+    response_description="The user's details",
+    tags=["users"])
 def get_user(user_login: str, username: str = Depends(authenticate)) -> User:
     """
     Returns details about a specific user.
