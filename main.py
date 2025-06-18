@@ -3,9 +3,8 @@ from filtered_users import load_users, remove_duplicates, filter_users, save_fil
 
 
 if __name__ == "__main__":
-
-    # users_info = get_users_info(10000, 10361000)
-    # save_users(users_info)
+    users_info = get_users_info(10000, 10361000)
+    save_users(users_info)
 
     users = load_users('data/users.json')
     unique_users = remove_duplicates(users)

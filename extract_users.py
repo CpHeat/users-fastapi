@@ -5,14 +5,32 @@ import time
 
 from dotenv import load_dotenv
 import requests
-from requests import get, Response
+from requests import Response
 from requests.exceptions import Timeout, ConnectionError
 
 load_dotenv()
+
+
 token = os.getenv("GITHUB_TOKEN")
 headers = {"Authorization": f"token {token}"}
 
-def safe_get(session, url, headers, max_retries=3, timeout=10):
+def safe_get(session, url, headers, max_retries=3, timeout=10) -> Response | None:
+    """
+    Safely gets a response from a url.
+
+    :param session: requests session.
+    :type session: requests.Session
+    :param url: url to call.
+    :type url: str
+    :param headers: headers to pass to the request.
+    :type headers: dict
+    :param max_retries: max retries.
+    :type max_retries: int
+    :param timeout: timeout.
+    :type timeout: int
+
+    :return: Response or None.
+    """
     for attempt in range(1, max_retries + 1):
         try:
             return session.get(url, headers=headers, timeout=timeout)
@@ -107,7 +125,7 @@ def get_user_detail(user_login:str, session: requests.Session) -> dict | None:
 
     :param user_login: The user's login.
     :type user_login: str
-    :param session: The requests current session..
+    :param session: The requests current session.
     :type session: requests.Session
 
     :return: The user's details.
@@ -117,7 +135,6 @@ def get_user_detail(user_login:str, session: requests.Session) -> dict | None:
     user_detail = None
 
     while True:
-        print("new while")
         result = safe_get(session, url, headers=headers)
 
         if result is None:
@@ -131,15 +148,11 @@ def get_user_detail(user_login:str, session: requests.Session) -> dict | None:
         time.sleep(get_delay(result))
 
         if error_handling["error"]:
-            print("error")
             if error_handling["end_script"]:
-                print("end_script")
                 return user_detail
             elif error_handling["pass"]:
-                print("pass")
                 return {"not_found": True}
             else:
-                print("else")
                 time.sleep(error_handling["timeout"])
                 continue
 
@@ -162,6 +175,7 @@ def get_delay(response:Response) -> int:
 
     :param response: The API response that contains quota information.
     :type response: requests.Response
+
     :return: The delay before continuing to make API Calls, in seconds.
     """
     try:
@@ -171,7 +185,6 @@ def get_delay(response:Response) -> int:
         print("Headers without RateLimit data, defaulting to 60s sleep.", e)
         return 60
 
-    print("remaining_calls", remaining_calls)
     if remaining_calls > 0:
         return 0
     else:
@@ -186,7 +199,9 @@ def handle_status_code(response:Response) -> dict:
     Specifies how to handle request's status code.
 
     :param response: The API response that contains the status code.
-    :return: How to handle the error through a dict
+    :type response: requests.Response
+
+    :return: How to handle the error through a dict.
     """
     if response.status_code == 403:
         if response.headers.get("X-RateLimit-Reset"):
@@ -251,6 +266,7 @@ def save_users(users_info:list[dict]) -> None:
     Saves the users information list in a JSON file.
 
     :param users_info: A list of users information.
+    :type users_info: list[dict]
     """
     with open('data/users.json', 'w') as fp:
         json.dump(users_info, fp, indent=4)
