@@ -89,7 +89,9 @@ uvicorn api.main:app --reload
 ```
 
 API disponible par défaut sur `http://127.0.0.1:8000`  
-Documentation et tests disponibles par défaut sur `http://127.0.0.1:8000/redoc` & `http://127.0.0.1:8000/docs`
+Documentation ReDoc disponible par défaut sur `http://127.0.0.1:8000/redoc`
+Documentation Swagger disponible par défaut sur `http://127.0.0.1:8000/docs`
+
 ---
 
 ## 📚 Endpoints principaux
