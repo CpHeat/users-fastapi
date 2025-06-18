@@ -229,8 +229,10 @@ Il faudra **cliquer sur "Authorize"** et entrer les identifiants définis dans `
 
 ## ✅ Lancer les tests unitaires
 
+Les tests unitaires de l'API permettent de vérifier que l'authentification fonctionne et que les retours sont du type attendu :
+
 ```bash
-pytest tests/test_api.py
+pytest -v
 ```
 
 ---
@@ -242,6 +244,7 @@ pytest tests/test_api.py
 * Uvicorn
 * dotenv
 * GitHub REST API
+* Pytest
 
 ---
 
