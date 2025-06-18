@@ -70,6 +70,10 @@ GITHUB_TOKEN=ton_token_github_ici
 
 ### 1. Extraire les données de GitHub
 
+`extract_users.py` contient les fonctions permettant d'interroger l'API GitHub pour en récupérer les utilisateurs et leur détail, et les enregistrer localement au format JSON.
+`filtered_users.py` contient les fonctions de nettoyage et filtrage de ces données brutes pour ne garder que les utilisateurs inscrits après une certaine période, avec une bio et un avatar valide.
+Pour effectuer ce travail, lancer :
+
 ```bash
 python main.py
 ```
@@ -103,7 +107,127 @@ La liste d'utilisateurs autorisés se trouve dans `.env`
 
 ---
 
-## ✅ Lancer les tests
+## 🧪 Tester l’API
+
+L’API est protégée par authentification basique. Il faut fournir des identifiants via un en-tête HTTP `Authorization` encodé en **Basic Auth**.  
+Exemple d’utilisateur (défini dans `.env`) :
+
+```json
+{
+  "login": "test",
+  "password": "1234"
+}
+```
+
+L’encodage en base64 de `test:1234` donne :  
+`dGVzdDoxMjM0`
+
+À utiliser ainsi dans les requêtes :
+
+```
+Authorization: Basic dGVzdDoxMjM0
+```
+
+---
+
+## 🧾 Endpoints & Exemples
+
+### ▶️ `GET /users`  
+Liste des utilisateurs filtrés (affiche `id` et `login` uniquement).
+
+#### 🔹 Requête `curl` :
+
+```bash
+curl -X GET http://127.0.0.1:8000/users \
+  -H "Authorization: Basic dGVzdDoxMjM0"
+```
+
+#### 🔹 Réponse JSON :
+
+```json
+[
+  {
+    "id": 6519166892,
+    "login": "anonymized_login"
+  },
+  {
+    "id": 6519166893,
+    "login": "anonymized_login2"
+  }
+]
+```
+
+---
+
+### ▶️ `GET /users/{login}`  
+Détail complet d’un utilisateur.
+
+#### 🔹 Requête `curl` :
+
+```bash
+curl -X GET http://127.0.0.1:8000/users/anonymized_login \
+  -H "Authorization: Basic dGVzdDoxMjM0"
+```
+
+#### 🔹 Réponse JSON :
+
+```json
+{
+  "login": "anonymized_login",
+  "id": 6519166892,
+  "created_at": "2015-01-01T00:11:45Z",
+  "avatar_url": "https://avatars.githubusercontent.com/u/6519166892?v=4",
+  "bio": "Anonymized bio."
+}
+```
+
+---
+
+### ▶️ `GET /users/search?q=<fragment>`  
+Recherche les utilisateurs dont le login contient le fragment recherché.
+
+#### 🔹 Requête `curl` :
+
+```bash
+curl -X GET "http://127.0.0.1:8000/users/search?q=nymiz" \
+  -H "Authorization: Basic dGVzdDoxMjM0"
+```
+
+#### 🔹 Réponse JSON :
+
+```json
+[
+  {
+    "id": 6519166892,
+    "login": "anonymized_login"
+  },
+  {
+    "id": 6519166893,
+    "login": "anonymized_login2"
+  }
+]
+```
+
+---
+
+## 📘 Documentation interactive
+
+Une fois le serveur lancé avec :
+
+```bash
+uvicorn api.main:app
+```
+
+Tu peux explorer et tester l’API depuis une interface web :
+
+- Swagger UI : [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- ReDoc : [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+Il faudra **cliquer sur "Authorize"** et entrer les identifiants définis dans `.env` pour tester les requêtes.
+
+---
+
+## ✅ Lancer les tests unitaires
 
 ```bash
 pytest tests/test_api.py
