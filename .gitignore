@@ -1,3 +1,4 @@
 .idea
 .venv
 .brief
+__pycache__
