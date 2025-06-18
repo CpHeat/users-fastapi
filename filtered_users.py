@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 import pandas as pd
 
@@ -22,8 +21,8 @@ def filter_users(required_fields:tuple[str, ...], creation_date_filter:str, user
     """
     Applies filters to a users list.
 
-    :param needed_fields: The required fields.
-    :type users_list: tuple[str]
+    :param required_fields: The required fields.
+    :type required_fields: tuple[str, ...]
     :param creation_date_filter: The oldest acceptable creation date.
     :type creation_date_filter: str
     :param users_list: The users list.
@@ -31,7 +30,6 @@ def filter_users(required_fields:tuple[str, ...], creation_date_filter:str, user
 
     :return: The filtered users list.
     """
-    filtered_users = []
     df = pd.DataFrame(users_list)
 
     for field in required_fields:
@@ -49,7 +47,7 @@ def filter_users(required_fields:tuple[str, ...], creation_date_filter:str, user
     print(f"Filtered out users: {len(users_list) - len(df)}")
     return df.to_dict(orient="records")
 
-def load_users(file:str):
+def load_users(file:str) -> list[dict]:
     """
     Loads a users information list from a JSON file.
 
@@ -62,17 +60,18 @@ def load_users(file:str):
     print(f"Loaded users: {len(users)}")
     return users
 
-def save_filtered_users(users_list:list[dict]):
+def save_filtered_users(users_list:list[dict]) -> None:
     """
     Saves the filtered users information list in a JSON file.
 
     :param users_list: A list of users information.
+    :type users_list: list[dict]
     """
     with open('data/filtered_users.json', 'w') as fp:
         json.dump(users_list, fp, indent=4)
     print(f"Saved filtered users: {len(users_list)}")
 
-def load_filtered_users(file_path:str):
+def load_filtered_users(file_path:str) -> list[dict]:
     """
     Loads a filtered users information list from a JSON file.
 
