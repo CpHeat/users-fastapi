@@ -224,6 +224,9 @@ Tu peux explorer et tester l’API depuis une interface web :
 
 Il faudra **cliquer sur "Authorize"** et entrer les identifiants définis dans `.env` pour tester les requêtes.
 
+![Screenshot](./img/1.png)
+![Screenshot ReDoc](./img/2.png)
+
 ---
 
 ## ✅ Lancer les tests unitaires
