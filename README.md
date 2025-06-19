@@ -51,10 +51,7 @@ Ce projet Python est structuré en deux volets :
 
 ```bash
 pip install -r requirements.txt
-pip install "fastapi[standard]"
 ```
-
-> Le paquet `fastapi[standard]` est requis pour utiliser les commandes FastAPI en CLI.
 
 ### 3. Configurer le token GitHub
 
@@ -85,7 +82,7 @@ python main.py
 ## 🌐 Lancer l’API FastAPI
 
 ```bash
-uvicorn api.main:app --reload
+uvicorn api.main:app
 ```
 
 API disponible par défaut sur `http://127.0.0.1:8000`  
